@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Video Gallery | Bel Mizen</title>
+
+  <style>
+    :root {
+      --bg-black: #000000; 
+      --primary-gold: #cf9b16; 
+      --whatsapp-green: #25D366;
+      --glass-surface: rgba(255, 255, 255, 0.03);
+      --text-on-dark: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg-black);
+      color: var(--text-on-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    #progressBar {
+      position: fixed;
+      top: 0; left: 0; width: 0%; height: 5px;
+      background: linear-gradient(to right, var(--primary-gold), #ffffff);
+      z-index: 2000;
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.9);
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(207, 155, 22, 0.2);
+    }
+
+    nav { max-width: 1200px; margin: auto; display: flex; justify-content: center; }
+    .menu { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; align-items: center; }
+    .menu a { 
+      font-weight: bold; 
+      font-size: 0.9rem; 
+      text-decoration: none; 
+      color: #ffffff; 
+      transition: 0.3s; 
+      text-transform: uppercase;
+      position: relative;
+    }
+    .menu a::after {
+      content: '';
+      position: absolute;
+      width: 0; height: 2px;
+      bottom: -5px; left: 0;
+      background: var(--primary-gold);
+      transition: width 0.3s ease;
+    }
+    .menu a:hover::after { width: 100%; }
+    .menu a:hover { color: var(--primary-gold); }
+
+    .wa-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--whatsapp-green);
+      color: white !important;
+      padding: 8px 18px;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+    }
+
+    .top-banner {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 60px 0;
+    }
+    .top-banner img {
+      width: 75%;
+      height: auto;
+      border-radius: 15px;
+      animation: bannerSway 5s ease-in-out infinite, sparkleGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes bannerSway {
+      0%, 100% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+    }
+    @keyframes sparkleGlow {
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(207, 155, 22, 0.3)); }
+      50% { filter: drop-shadow(0 0 30px rgba(207, 155, 22, 0.7)) brightness(1.1); }
+    }
+
+    .container { width: min(1200px, 94%); margin: auto; padding-bottom: 80px; }
+
+    .section-title { 
+      text-align: center; 
+      font-size: 2.8rem; 
+      text-transform: uppercase; 
+      color: var(--primary-gold); 
+      letter-spacing: 4px; 
+      margin-bottom: 10px; 
+    }
+    .section-subtitle { text-align: center; color: white; font-weight: 600; margin-bottom: 50px; opacity: 0.8; }
+
+    .featured-video {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 60px;
+      background: var(--glass-surface);
+      border-radius: 15px;
+      padding: 10px;
+      border: 2px solid var(--primary-gold);
+      box-shadow: 0 0 25px rgba(207, 155, 22, 0.3);
+    }
+    .featured-video video { width: 100%; border-radius: 10px; display: block; }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+    }
+
+    .video-card {
+      background: var(--glass-surface);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.5s ease;
+      backdrop-filter: blur(5px);
+      animation: iconSway 4s ease-in-out infinite;
+    }
+    
+    @keyframes iconSway {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(6px); }
+    }
+
+    .video-card:hover {
+      animation-play-state: paused;
+      transform: translateY(-10px);
+      border-color: var(--primary-gold);
+      box-shadow: 0 0 25px rgba(207, 155, 22, 0.3);
+      background: rgba(207, 155, 22, 0.05);
+    }
+
+    .video-container { width: 100%; background: #000; }
+    .video-card video {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      opacity: 0.8;
+      transition: 0.3s;
+    }
+    .video-card:hover video { opacity: 1; }
+
+    .video-info { padding: 20px; color: white; text-align: center; }
+    .video-info h3 {
+      color: var(--primary-gold);
+      text-transform: uppercase;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+    }
+
+    .wa-float {
+      position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px;
+      background: var(--whatsapp-green); border-radius: 50%; display: flex; 
+      justify-content: center; align-items: center; z-index: 2000;
+      transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    .wa-float:hover { transform: scale(1.1) rotate(10deg); }
+
+    footer { 
+      padding: 60px 20px; 
+      text-align: center; 
+      background: #050505; 
+      color: white; 
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s ease-out; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+
+<body>
+
+<div id="progressBar"></div>
+
+<header id="siteHeader">
+  <nav>
+    <div class="menu">
+      <a href="index.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="offers.html">Offers</a>
+      <a href="index.html#social">Social Media</a>
+      <a href="gallery.html" style="color: var(--primary-gold);">Gallery</a>
+      <a href="index.html#location">Location</a>
+      <a href="contacts.html">Contacts</a>
+      <a href="https://wa.me/96176191914" class="wa-nav-btn" target="_blank">
+        <span>Whatsapp Orders</span>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<div class="top-banner">
+  <img src="Header.png" alt="Bel Mizen Banner">
+</div>
+
+<div class="container">
+  <h1 class="section-title">Video Gallery</h1>
+  <p class="section-subtitle">Experience the sizzle of our grill and the atmosphere of Bel Mizen.</p>
+
+  <div class="featured-video reveal">
+    <video controls poster="video-placeholder.jpg">
+      <source src="featured-grill.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div style="padding: 15px; text-align: center; color: white;">
+        <h3 style="color: var(--primary-gold);">Featured Story</h3>
+    </div>
+  </div>
+
+  <div class="video-grid">
+    <div class="video-card reveal">
+      <div class="video-container">
+        <video muted onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;" loop>
+          <source src="steak-sizzle.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="video-info">
+        <h3>The Perfect Steak</h3>
+      </div>
+    </div>
+
+    <div class="video-card reveal" style="animation-delay: 0.2s;">
+        <div class="video-container">
+          <video muted onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;" loop>
+            <source src="tawouk-grilling.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="video-info">
+          <h3>Tawouk Mastery</h3>
+        </div>
+    </div>
+
+    <div class="video-card reveal" style="animation-delay: 0.4s;">
+      <div class="video-container">
+        <video muted onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;" loop>
+          <source src="restaurant-vibe.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="video-info">
+        <h3>Bel Mizen Vibes</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p style="font-weight: bold; color: var(--primary-gold); letter-spacing: 1px;">© 2026 Bel Mizen — بالميزان و عالغرام</p>
+</footer>
+
+<a href="https://wa.me/96176191914" class="wa-float" target="_blank">
+  <svg width="34" height="34" viewBox="0 0 24 24" fill="white"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.501-.669-.51l-.57-.011c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+</a>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const winScroll = document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    document.getElementById('progressBar').style.width = (winScroll / height) * 100 + "%";
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+</script>
+
+</body>
+</html>
