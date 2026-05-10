@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Special Offers | Bel Mizen</title>
+
+  <style>
+    :root {
+      --bg-black: #000000; 
+      --primary-gold: #cf9b16; 
+      --whatsapp-green: #25D366;
+      --text-on-dark: #ffffff;
+      
+      /* Vibrant Palette */
+      --color-1: #ff4757; --color-2: #2ed573; --color-3: #1e90ff; 
+      --color-4: #ffa502; --color-5: #e056fd; --color-6: #7bed9f; --color-7: #f9ca24;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg-black);
+      color: var(--text-on-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    #progressBar {
+      position: fixed; top: 0; left: 0; width: 0%; height: 5px;
+      background: linear-gradient(to right, var(--primary-gold), #ffffff);
+      z-index: 2000;
+    }
+
+    header {
+      background: rgba(0, 0, 0, 0.9); padding: 15px 0;
+      position: sticky; top: 0; z-index: 1000;
+      backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    nav { max-width: 1200px; margin: auto; display: flex; justify-content: center; }
+    .menu { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; align-items: center; }
+    .menu a { font-weight: bold; font-size: 0.9rem; text-decoration: none; color: #ffffff; transition: 0.3s; text-transform: uppercase; }
+    .menu a:hover { color: var(--primary-gold); }
+
+    .wa-nav-btn {
+      display: flex; align-items: center; gap: 8px; background: var(--whatsapp-green);
+      color: white !important; padding: 8px 18px; border-radius: 50px; font-size: 0.85rem;
+    }
+
+    /* THE FIX: Higher Z-index and clear positioning */
+    .category-bar {
+      position: sticky; top: 66px; background: rgba(10, 10, 10, 0.95);
+      z-index: 1000; padding: 15px 0; display: flex; justify-content: center; gap: 12px;
+      backdrop-filter: blur(8px); border-bottom: 1px solid var(--primary-gold); flex-wrap: wrap;
+    }
+    
+    .category-bar a {
+      text-decoration: none; font-size: 0.8rem; padding: 8px 16px;
+      border-radius: 50px; transition: all 0.3s ease;
+      text-transform: uppercase; font-weight: 700; border: 2px solid transparent;
+    }
+
+    /* Individual Button Colors (Forced specificity) */
+    .category-bar a.btn-1.active { background: var(--color-1) !important; color: black !important; box-shadow: 0 0 20px var(--color-1); border-color: var(--color-1); }
+    .category-bar a.btn-1 { color: var(--color-1); border-color: rgba(255, 71, 87, 0.3); }
+
+    .category-bar a.btn-2.active { background: var(--color-2) !important; color: black !important; box-shadow: 0 0 20px var(--color-2); border-color: var(--color-2); }
+    .category-bar a.btn-2 { color: var(--color-2); border-color: rgba(46, 213, 115, 0.3); }
+
+    .category-bar a.btn-3.active { background: var(--color-3) !important; color: black !important; box-shadow: 0 0 20px var(--color-3); border-color: var(--color-3); }
+    .category-bar a.btn-3 { color: var(--color-3); border-color: rgba(30, 144, 255, 0.3); }
+
+    .category-bar a.btn-4.active { background: var(--color-4) !important; color: black !important; box-shadow: 0 0 20px var(--color-4); border-color: var(--color-4); }
+    .category-bar a.btn-4 { color: var(--color-4); border-color: rgba(255, 165, 2, 0.3); }
+
+    .category-bar a.btn-5.active { background: var(--color-5) !important; color: black !important; box-shadow: 0 0 20px var(--color-5); border-color: var(--color-5); }
+    .category-bar a.btn-5 { color: var(--color-5); border-color: rgba(224, 86, 253, 0.3); }
+
+    .category-bar a.btn-6.active { background: var(--color-6) !important; color: black !important; box-shadow: 0 0 20px var(--color-6); border-color: var(--color-6); }
+    .category-bar a.btn-6 { color: var(--color-6); border-color: rgba(123, 237, 159, 0.3); }
+
+    .category-bar a.btn-7.active { background: var(--color-7) !important; color: black !important; box-shadow: 0 0 20px var(--color-7); border-color: var(--color-7); }
+    .category-bar a.btn-7 { color: var(--color-7); border-color: rgba(249, 202, 36, 0.3); }
+
+    .offers-hero { padding: 60px 20px; text-align: center; }
+    .hero-logo { max-width: 400px; width: 100%; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
+
+    .container { width: min(1000px, 94%); margin: auto; padding-bottom: 300px; }
+    
+    /* THE FIX: scroll-margin-top ensures the section stops where we want it */
+    section { 
+      margin-bottom: 120px; 
+      scroll-margin-top: 180px; 
+      text-align: center; 
+      display: flex; 
+      justify-content: center; 
+    }
+
+    .offer-visual {
+      width: 75%; border-radius: 20px; border-top: 4px solid var(--primary-gold);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.8); transition: all 0.6s ease; filter: brightness(0.8);
+    }
+
+    @keyframes sequentialGlow {
+      0% { filter: brightness(0.8); }
+      50% { filter: brightness(1.2); box-shadow: 0 0 45px var(--primary-gold); transform: scale(1.01); }
+      100% { filter: brightness(0.9); box-shadow: 0 10px 25px rgba(207, 155, 22, 0.3); }
+    }
+
+    .reveal.visible .offer-visual { animation: sequentialGlow 2.5s ease-in-out forwards; }
+
+    .wa-float {
+      position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px;
+      background: var(--whatsapp-green); border-radius: 50%; display: flex; 
+      justify-content: center; align-items: center; z-index: 2000;
+    }
+
+    footer { padding: 60px 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); color: white; }
+    .reveal { opacity: 1; transform: translateY(30px); transition: 0.8s ease-out; }
+    .reveal.visible { transform: translateY(0); }
+  </style>
+</head>
+
+<body>
+
+<div id="progressBar"></div>
+
+<header>
+  <nav>
+    <div class="menu">
+      <a href="index.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="offers.html" style="color: var(--primary-gold);">Offers</a>
+      <a href="index.html#social">Social Media</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="index.html#location">Location</a>
+      <a href="contacts.html">Contacts</a>
+      <a href="https://wa.me/96176191914" class="wa-nav-btn" target="_blank"><span>Whatsapp Orders</span></a>
+    </div>
+  </nav>
+</header>
+
+<div class="category-bar">
+  <a href="#offer1" class="btn-1">Offer One</a>
+  <a href="#offer2" class="btn-2">Offer Two</a>
+  <a href="#offer3" class="btn-3">Offer Three</a>
+  <a href="#offer4" class="btn-4">Offer Four</a>
+  <a href="#offer5" class="btn-5">Offer Five</a>
+  <a href="#offer6" class="btn-6">Offer Six</a>
+  <a href="#offer7" class="btn-7">Offer Seven</a>
+</div>
+
+<div class="offers-hero">
+  <div style="padding: 40px; border-radius: 50%; display: inline-block; background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);">
+    <img class="hero-logo" src="BEL MIZEN LOGO FINAL.png" alt="Bel Mizen Offers">
+  </div>
+</div>
+
+<div class="container">
+  <section id="offer1" class="reveal"><img src="offers1.png" class="offer-visual" alt="Offer 1"></section>
+  <section id="offer2" class="reveal" style="transition-delay: 0.1s;"><img src="offers2.png" class="offer-visual" alt="Offer 2"></section>
+  <section id="offer3" class="reveal" style="transition-delay: 0.2s;"><img src="offers3.png" class="offer-visual" alt="Offer 3"></section>
+  <section id="offer4" class="reveal" style="transition-delay: 0.3s;"><img src="offers4.png" class="offer-visual" alt="Offer 4"></section>
+  <section id="offer5" class="reveal" style="transition-delay: 0.4s;"><img src="offers5.png" class="offer-visual" alt="Offer 5"></section>
+  <section id="offer6" class="reveal" style="transition-delay: 0.5s;"><img src="offers6.png" class="offer-visual" alt="Offer 6"></section>
+  <section id="offer7" class="reveal" style="transition-delay: 0.6s;"><img src="offers7.png" class="offer-visual" alt="Offer 7"></section>
+</div>
+
+<footer><p>© 2026 Bel Mizen — بالميزان و عالغرام</p></footer>
+
+<a href="https://wa.me/96176191914" class="wa-float" target="_blank">
+  <svg width="34" height="34" viewBox="0 0 24 24" fill="white"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.501-.669-.51l-.57-.011c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+</a>
+
+<script>
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.category-bar a');
+  let isScrolling = false;
+
+  // Add click listeners to handle the manual jumping
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      isScrolling = true;
+      navLinks.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      
+      // Unlock after scroll finishes (approx 1s)
+      setTimeout(() => { isScrolling = false; }, 1000);
+    });
+  });
+
+  window.addEventListener('scroll', () => {
+    // Progress Bar
+    const winScroll = document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    document.getElementById('progressBar').style.width = (winScroll / height) * 100 + "%";
+
+    if (isScrolling) return; // Don't override highlight if we just clicked a button
+
+    let current = "";
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      if (pageYOffset >= (sectionTop - 250)) { // Tightened trigger point
+        current = section.getAttribute('id');
+      }
+    });
+
+    // Handle end of page
+    if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 50) {
+      current = "offer7";
+    }
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href').includes(current)) {
+        link.classList.add('active');
+      }
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+</script>
+
+</body>
+</html>
